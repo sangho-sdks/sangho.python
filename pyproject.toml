@@ -1,16 +1,36 @@
 [build-system]
-requires = ["setuptools>=61", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["setuptools>=61", "wheel", "hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "sangho"
 version = "1.0.0"
-description = "Sangho Python SDK — XAF-first payment platform for Africa"
+description = "SDK officiel Python pour l'API Sangho"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.13"
 license = { text = "MIT" }
-authors = [{ name = "Sangho", email = "dev@sangho.com" }]
+authors = [{ name = "Sangho", email = "dev@sangho.africa" }]
+keywords = ["sangho", "payments", "africa", "xaf", "sdk"]
 dependencies = ["httpx>=0.27.0"]
+
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+
+[project.urls]
+Homepage = "https://docs.sangho.com"
+Repository = "https://github.com/sangho-sdks/sangho-python"
+Changelog = "https://github.com/sangho-sdks/sangho-python/blob/main/CHANGELOG.md"
+
+[tool.hatch.version]
+path = "sangho/__init__.py"
 
 [project.optional-dependencies]
 dev = [
@@ -27,7 +47,7 @@ include = ["sangho*"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py310"
+target-version = "py313"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]

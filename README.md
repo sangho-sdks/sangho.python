@@ -1,6 +1,12 @@
 # Sangho Python SDK
 
-Official Python SDK for the [Sangho](https://sangho.com) payment platform — XAF-first, built for francophone Africa.
+SDK officiel Python pour l'API [Sangho](https://sangho.africa) — paiements XAF pour l'Afrique.
+
+[![PyPI version](https://badge.fury.io/py/sangho.svg)](https://badge.fury.io/py/sangho)
+[![CI](https://github.com/sangho-sdks/sangho-python/actions/workflows/ci.yml/badge.svg)](https://github.com/sangho-sdks/sangho-python/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+---
 
 ## Installation
 
@@ -8,51 +14,41 @@ Official Python SDK for the [Sangho](https://sangho.com) payment platform — XA
 pip install sangho
 ```
 
-## Quick Start
+## Quickstart
 
 ```python
-from sangho import Sangho
+import sangho
 
-client = Sangho("sk_test_xxx")
+client = sangho.Sangho(secret_key="sk_live_...")
 
-# Create a customer
-customer = client.customers.create(email="jean@example.com", name="Jean Ondo")
+# Créer un payment intent
+intent = client.payment_intents.create({
+    "amount": 5000,
+    "currency": "XAF",
+    "customer": "cust_xxx"
+})
 
-# Create a payment intent
-intent = client.payment_intents.create(amount=25000, customer=customer["id"])
-
-# Confirm payment
-confirmed = client.payment_intents.confirm(intent["id"])
+print(intent["id"])
 ```
 
-## Error Handling
+## Documentation
 
-```python
-from sangho import SanghoValidationError, SanghoNotFoundError, SanghoRateLimitError
+La documentation complète est disponible sur [docs.sangho.africa](https://docs.sangho.africa).
 
-try:
-    client.invoices.pay("inv_xxx")
-except SanghoValidationError as e:
-    print(e.field_errors)
-except SanghoNotFoundError:
-    print("Invoice not found")
-except SanghoRateLimitError as e:
-    print(f"Rate limited. Retry after {e.retry_after}s")
-```
+## Ressources disponibles
 
-## Webhook Verification
+`apps` · `customers` · `products` · `payment_intents` · `checkout_sessions` ·
+`invoices` · `transactions` · `refunds` · `subscriptions` · `payment_methods` ·
+`webhooks` · `payment_links` · `addresses` · `partners`
 
-```python
-from sangho.resources.webhooks import Webhooks
+## Contribuer
 
-event = Webhooks.construct_event(
-    payload=request.body,
-    signature_header=request.headers["Sangho-Signature"],
-    secret="whsec_xxx",
-)
-```
+Voir [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Requirements
+## Changelog
 
-- Python 3.10+
-- httpx >= 0.27
+Voir [CHANGELOG.md](CHANGELOG.md).
+
+## Licence
+
+MIT
