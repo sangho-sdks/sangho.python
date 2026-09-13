@@ -1,0 +1,55 @@
+# .github/workflows/release.yml
+name: Release SDK
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Type de version"
+        required: true
+        default: patch
+        type: choice
+        options: [patch, minor, major]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Version la plus récente pour builder/publier : le paquet lui-même
+      # reste installable sur 3.11-3.14 (cf. requires-python), on construit
+      # juste avec la dernière stable.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - run: pip install -e ".[dev]"
+
+      - run: make lint
+      - run: make typecheck
+
+      # Uniquement les tests unitaires ici : ce workflow n'a pas de secret
+      # SANGHO_API_KEY et ne doit pas dépendre de la disponibilité du
+      # sandbox externe. Les tests d'intégration se lancent à part, en
+      # local, via `make test-integration`.
+      - run: make test
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump + tag + build + publish
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: make release-${{ inputs.bump }}
+
+      - name: Read released version
+        id: release
+        run: echo "version=$(python -c 'import sangho; print(sangho.__version__)')" >> "$GITHUB_OUTPUT"

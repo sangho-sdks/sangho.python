@@ -17,7 +17,7 @@ from sangho import (
     SanghoRateLimitError,
 )
 
-BASE = "https://api.sangho.com/v1"
+BASE = "https://api.sangho.ga/v1"
 
 
 # ---------------------------------------------------------------------------
@@ -155,14 +155,14 @@ def test_422_raises_validation_error(client):
 
 
 @respx.mock
-def test_429_raises_rate_limit(client):
+def test_429_raises_rate_limit():
     respx.get(f"{BASE}/customers/").mock(
-        return_value=httpx.Response(429, json={"message": "Rate limit", "retry_later": 30})
+        return_value=httpx.Response(429, json={"message": "Rate limit", "retry_after": 30})
     )
+    no_retry_client = Sangho("sk_test_abc123456789", max_retries=0)
     with pytest.raises(SanghoRateLimitError) as exc_info:
-        # Disable retry for test speed
-        client._client._RETRY_DELAYS = ()  # type: ignore
-        client.customers.list()
+        no_retry_client.customers.list()
+    assert exc_info.value.retry_after == 30
 
 
 # ---------------------------------------------------------------------------

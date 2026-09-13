@@ -40,7 +40,7 @@ class TestAuthIntegration:
 
     def test_secret_key_formats_accepted(self, base_url):
         """Les 4 formats de préfixe valides sont acceptés sans ValueError."""
-        valid_prefixes = ["sk_live_", "sk_test_", "pk_live_", "pk_test_"]
+        valid_prefixes = ["sk_prod_", "sk_test_", "pk_prod_", "pk_test_"]
         for prefix in valid_prefixes:
             client = Sangho(prefix + "x" * 20, base_url=base_url)
             assert client is not None

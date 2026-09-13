@@ -4,13 +4,13 @@ build-backend = "hatchling.build"
 
 [project]
 name = "sangho"
-version = "1.0.0"
+version = "1.2.0"
 description = "SDK officiel Python pour l'API Sangho"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.11"
 license = { text = "MIT" }
-authors = [{ name = "Sangho", email = "dev@sangho.africa" }]
-keywords = ["sangho", "payments", "africa", "xaf", "sdk"]
+authors = [{ name = "Sangho", email = "nels.holy.allg@gmail.com" }]
+keywords = ["sangho", "payments", "afrique", "xaf", "mobile-money", "sdk", "python"]
 dependencies = ["httpx>=0.27.0"]
 
 classifiers = [
@@ -18,16 +18,18 @@ classifiers = [
   "Intended Audience :: Developers",
   "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Framework :: AsyncIO",
 ]
 
 [project.urls]
-Homepage = "https://docs.sangho.com"
-Repository = "https://github.com/sangho-sdks/sangho-python"
-Changelog = "https://github.com/sangho-sdks/sangho-python/blob/main/CHANGELOG.md"
+Homepage = "https://docs.sangho.ga/api/sdks/python/"
+Repository = "https://github.com/sangho-sdks/sangho.python"
+Issues = "https://github.com/sangho-sdks/sangho.python/issues"
+Changelog = "https://github.com/sangho-sdks/sangho.python/blob/main/CHANGELOG.md"
 
 [tool.hatch.version]
 path = "sangho/__init__.py"
@@ -35,10 +37,12 @@ path = "sangho/__init__.py"
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0",
-    "pytest-asyncio>=0.23",
+    "pytest-asyncio>=0.24",
     "respx>=0.21",
     "ruff>=0.4",
     "mypy>=1.10",
+    "build>=1.2",
+    "twine>=5.0",
 ]
 
 [tool.setuptools.packages.find]
@@ -47,15 +51,18 @@ include = ["sangho*"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py313"
+target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.11"
 strict = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+markers = [
+    "integration: tests d'intégration nécessitant SANGHO_API_KEY (sandbox)",
+]

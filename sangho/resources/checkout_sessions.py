@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from sangho._base import BaseResource
 
 
@@ -10,7 +11,8 @@ class CheckoutSessions(BaseResource):
         return self._client.get(self._path, params=criteria or None)
 
     def retrieve(self, id: str) -> dict:
-        self._client.assert_secret_key("checkout_sessions.retrieve")
+        # Le backend autorise explicitement la clé publique sur cette action
+        # (page de confirmation côté navigateur) — ne pas la bloquer ici.
         return self._client.get(f"{self._path}{id}/")
 
     def create(self, amount: int, success_url: str, cancel_url: str, **opts) -> dict:
@@ -29,6 +31,10 @@ class CheckoutSessions(BaseResource):
     def expire(self, id: str) -> dict:
         self._client.assert_secret_key("checkout_sessions.expire")
         return self._client.post(f"{self._path}{id}/expire/")
+
+    def delete(self, id: str) -> dict:
+        self._client.assert_secret_key("checkout_sessions.delete")
+        return self._client.delete(f"{self._path}{id}/")
 
     def options(self) -> dict:
         return self._client.options(self._path)

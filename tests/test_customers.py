@@ -5,7 +5,7 @@ import httpx
 
 from sangho import Sangho, SanghoNotFoundError, SanghoValidationError, SanghoPublicKeyError
 
-BASE = "https://api.sangho.com/v1"
+BASE = "https://api.sangho.ga/v1"
 
 
 @pytest.fixture

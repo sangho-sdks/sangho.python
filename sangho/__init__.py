@@ -9,22 +9,40 @@ Basic usage::
 
     client = Sangho("sk_test_xxx")
     customer = client.customers.create(email="jean@example.com", name="Jean Ondo")
-"""
-from sangho.sangho import Sangho
-from sangho._errors import (
-    SanghoError,
-    SanghoAuthError,
-    SanghoPublicKeyError,
-    SanghoPermissionError,
-    SanghoNotFoundError,
-    SanghoIdempotencyError,
-    SanghoValidationError,
-    SanghoRateLimitError,
-)
 
-__version__ = "1.0.0"
+Async usage::
+
+    import asyncio
+    from sangho import AsyncSangho
+
+    async def main():
+        async with AsyncSangho("sk_test_xxx") as client:
+            customer = await client.customers.create(email="jean@example.com", name="Jean Ondo")
+
+    asyncio.run(main())
+"""
+
+from sangho import error
+from sangho._errors import (
+    SanghoAuthError,
+    SanghoError,
+    SanghoIdempotencyError,
+    SanghoNetworkError,
+    SanghoNotFoundError,
+    SanghoPermissionError,
+    SanghoPublicKeyError,
+    SanghoRateLimitError,
+    SanghoTimeoutError,
+    SanghoValidationError,
+)
+from sangho.sangho import Sangho
+from sangho.sangho_async import AsyncSangho
+
+__version__ = "1.2.0"
 __all__ = [
     "Sangho",
+    "AsyncSangho",
+    "error",
     "SanghoError",
     "SanghoAuthError",
     "SanghoPublicKeyError",
@@ -33,4 +51,6 @@ __all__ = [
     "SanghoIdempotencyError",
     "SanghoValidationError",
     "SanghoRateLimitError",
+    "SanghoNetworkError",
+    "SanghoTimeoutError",
 ]

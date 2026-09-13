@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from sangho._base import BaseResource
 
 
@@ -13,6 +14,7 @@ class Customers(BaseResource):
     sangho.customers.delete(id)
     sangho.customers.options()
     sangho.customers.list_transactions(id, **criteria)
+    sangho.customers.list_payment_methods(id)
     """
 
     _path = "/customers/"
@@ -70,3 +72,8 @@ class Customers(BaseResource):
         """List all transactions for a given customer."""
         self._client.assert_secret_key("customers.list_transactions")
         return self._client.get(f"{self._path}{id}/transactions/", params=criteria or None)
+
+    def list_payment_methods(self, id: str) -> dict:
+        """List all payment methods attached to a given customer."""
+        self._client.assert_secret_key("customers.list_payment_methods")
+        return self._client.get(f"{self._path}{id}/payment-methods/")

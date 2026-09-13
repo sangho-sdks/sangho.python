@@ -6,7 +6,7 @@ Ces tests tournent contre un vrai serveur Sangho (local ou sandbox).
 Variables d'environnement requises :
     SANGHO_TEST_SECRET_KEY   sk_test_xxx  (obligatoire)
     SANGHO_TEST_PUBLIC_KEY   pk_test_xxx  (obligatoire)
-    SANGHO_API_BASE_URL      https://api.sangho.com/v1  (optionnel)
+    SANGHO_API_BASE_URL      https://api.sangho.ga/v1  (optionnel)
 
 Lancement :
     SANGHO_TEST_SECRET_KEY=sk_test_xxx pytest tests/integration/ -v
@@ -44,7 +44,7 @@ def public_key() -> str:
 
 @pytest.fixture(scope="session")
 def base_url() -> str:
-    return os.getenv("SANGHO_API_BASE_URL", "https://api.sangho.com/v1")
+    return os.getenv("SANGHO_API_BASE_URL", "https://api.sangho.ga/v1")
 
 
 @pytest.fixture(scope="session")

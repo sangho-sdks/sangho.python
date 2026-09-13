@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from sangho._base import BaseResource
 
 
@@ -24,6 +25,11 @@ class Apps(BaseResource):
     def delete(self, id: str) -> None:
         self._client.assert_secret_key("apps.delete")
         return self._client.delete(f"{self._path}{id}/")
+
+    def keys(self, id: str) -> dict:
+        """Retrieve the current publishable/secret key pair for an app."""
+        self._client.assert_secret_key("apps.keys")
+        return self._client.get(f"{self._path}{id}/keys/")
 
     def roll_secret(self, id: str) -> dict:
         """Rotate the secret key for an app."""

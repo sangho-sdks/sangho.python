@@ -11,7 +11,7 @@ class TestPaymentLinksIntegration:
         link = client.payment_links.create(amount=15_000)
         assert link["id"]
         assert link["amount"] == 15_000
-        client.payment_links.deactivate(link["id"])
+        client.payment_links.archive(link["id"])
 
     def test_list_payment_links(self, client):
         result = client.payment_links.list(page_size=5)
