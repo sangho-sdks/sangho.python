@@ -38,6 +38,7 @@ path = "sangho/__init__.py"
 dev = [
     "pytest>=8.0",
     "pytest-asyncio>=0.24",
+    "pytest-cov>=5.0",
     "respx>=0.21",
     "ruff>=0.4",
     "mypy>=1.10",
