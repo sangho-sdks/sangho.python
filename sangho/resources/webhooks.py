@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import builtins
 import hashlib
 import hmac
 import json
@@ -20,7 +21,12 @@ class Webhooks(BaseResource):
         self._client.assert_secret_key("webhooks.retrieve")
         return self._client.get(f"{self._path}{id}/")
 
-    def create(self, url: str, events: list[str], **opts) -> dict:
+    # `builtins.list` plutôt que `list` : cette classe déclare sa propre
+    # méthode `list` ci-dessus, qui masque le type builtin `list` dans
+    # l'espace de noms de la classe pour la résolution des annotations
+    # différées (from __future__ import annotations) — sans ce préfixe,
+    # mypy résout `list[str]` vers `Webhooks.list` et non vers le builtin.
+    def create(self, url: str, events: builtins.list[str], **opts) -> dict:
         self._client.assert_secret_key("webhooks.create")
         return self._client.post(self._path, body={"url": url, "events": events, **opts})
 

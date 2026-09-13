@@ -1,12 +1,13 @@
 """Tests d'intégration — Transactions"""
+
 import pytest
+
 from sangho import SanghoNotFoundError
 
 pytestmark = pytest.mark.integration
 
 
 class TestTransactionsIntegration:
-
     def test_list_transactions(self, client):
         result = client.transactions.list(page_size=5)
         assert "count" in result

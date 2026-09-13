@@ -2,17 +2,17 @@
 Tests d'intégration — Customers
 Couvre : list, retrieve, create, update, delete, list_transactions
 """
+
 import uuid
+
 import pytest
-from sangho import (
-    Sangho, SanghoNotFoundError, SanghoValidationError, SanghoPublicKeyError
-)
+
+from sangho import SanghoNotFoundError, SanghoPublicKeyError, SanghoValidationError
 
 pytestmark = pytest.mark.integration
 
 
 class TestCustomersIntegration:
-
     # ── CRUD complet ─────────────────────────────────────────────────────────
 
     def test_create_customer(self, client):

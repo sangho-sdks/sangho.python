@@ -2,10 +2,10 @@
 Tests for the Sangho Python SDK.
 Uses respx to mock httpx calls — no real network requests.
 """
-import json
+
+import httpx
 import pytest
 import respx
-import httpx
 
 import sangho
 from sangho import (
@@ -13,8 +13,8 @@ from sangho import (
     SanghoAuthError,
     SanghoNotFoundError,
     SanghoPublicKeyError,
-    SanghoValidationError,
     SanghoRateLimitError,
+    SanghoValidationError,
 )
 
 BASE = "https://api.sangho.ga/v1"
@@ -23,6 +23,7 @@ BASE = "https://api.sangho.ga/v1"
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def client():
@@ -38,6 +39,7 @@ def pub_client():
 # Key validation
 # ---------------------------------------------------------------------------
 
+
 def test_invalid_key_prefix():
     with pytest.raises(ValueError, match="Invalid API key format"):
         Sangho("bad_key_123")
@@ -51,6 +53,7 @@ def test_public_key_on_write(pub_client):
 # ---------------------------------------------------------------------------
 # Customers
 # ---------------------------------------------------------------------------
+
 
 @respx.mock
 def test_customers_list(client):
@@ -89,6 +92,7 @@ def test_customers_delete(client):
 # Payment Intents
 # ---------------------------------------------------------------------------
 
+
 @respx.mock
 def test_payment_intent_create_and_confirm(client):
     intent = {"id": "pay_1", "status": "requires_confirmation", "amount": 5000}
@@ -107,8 +111,12 @@ def test_payment_intent_create_and_confirm(client):
 # Webhooks — signature verification
 # ---------------------------------------------------------------------------
 
+
 def test_webhook_construct_event_valid():
-    import hashlib, hmac, time
+    import hashlib
+    import hmac
+    import time
+
     secret = "whsec_testsecret"
     ts = str(int(time.time()))
     payload = b'{"type":"payment_intent.succeeded"}'
@@ -122,6 +130,7 @@ def test_webhook_construct_event_valid():
 # ---------------------------------------------------------------------------
 # Error handling
 # ---------------------------------------------------------------------------
+
 
 @respx.mock
 def test_401_raises_auth_error(client):
@@ -168,6 +177,7 @@ def test_429_raises_rate_limit():
 # ---------------------------------------------------------------------------
 # Context manager
 # ---------------------------------------------------------------------------
+
 
 def test_context_manager():
     with Sangho("sk_test_abc123456789") as c:

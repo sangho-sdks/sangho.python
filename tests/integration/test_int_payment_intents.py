@@ -2,7 +2,9 @@
 Tests d'intégration — PaymentIntents
 Couvre : create, retrieve, list, confirm, cancel
 """
+
 import pytest
+
 from sangho import SanghoNotFoundError
 
 pytestmark = pytest.mark.integration
@@ -26,7 +28,6 @@ def payment_intent(client, test_customer):
 
 
 class TestPaymentIntentsIntegration:
-
     def test_create_payment_intent(self, client, test_customer):
         """Crée un payment intent et vérifie la structure."""
         intent = client.payment_intents.create(

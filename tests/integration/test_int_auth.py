@@ -2,14 +2,15 @@
 Tests d'intégration — Authentification & sécurité des clés API
 Vérifie le comportement selon le type de clé (public vs secret).
 """
+
 import pytest
+
 from sangho import Sangho, SanghoAuthError, SanghoPublicKeyError
 
 pytestmark = pytest.mark.integration
 
 
 class TestAuthIntegration:
-
     def test_valid_secret_key_authenticates(self, client):
         """Une clé secrète valide doit permettre de lister les customers."""
         result = client.customers.list(page_size=1)

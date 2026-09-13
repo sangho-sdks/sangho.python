@@ -1,4 +1,5 @@
 """Tests for webhook signature verification."""
+
 import hashlib
 import hmac
 import json
@@ -6,8 +7,8 @@ import time
 
 import pytest
 
-from sangho.resources.webhooks import Webhooks
 from sangho._errors import SanghoError
+from sangho.resources.webhooks import Webhooks
 
 
 def _make_header(payload: bytes, secret: str, timestamp: int | None = None) -> str:

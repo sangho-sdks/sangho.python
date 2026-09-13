@@ -1,12 +1,13 @@
 """Tests d'intégration — PaymentLinks"""
+
 import pytest
+
 from sangho import SanghoNotFoundError
 
 pytestmark = pytest.mark.integration
 
 
 class TestPaymentLinksIntegration:
-
     def test_create_payment_link(self, client):
         link = client.payment_links.create(amount=15_000)
         assert link["id"]

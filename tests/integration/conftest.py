@@ -13,9 +13,13 @@ Lancement :
     # ou via Makefile :
     make test-integration
 """
+
 import os
+
 import pytest
+
 from sangho import Sangho
+
 
 # ── Skip global si clé absente ────────────────────────────────────────────────
 def pytest_collection_modifyitems(items):
@@ -62,6 +66,7 @@ def pub_client(public_key, base_url) -> Sangho:
 def test_customer(client) -> dict:
     """Crée un client de test et le supprime après la session."""
     import uuid
+
     customer = client.customers.create(
         email=f"integration-test-{uuid.uuid4().hex[:8]}@sangho-test.com",
         name="Integration Test User",
@@ -78,6 +83,7 @@ def test_customer(client) -> dict:
 def test_product(client) -> dict:
     """Crée un produit de test et le supprime après la session."""
     import uuid
+
     product = client.products.create(
         name=f"Test Product {uuid.uuid4().hex[:6]}",
         price=5000,

@@ -1,12 +1,13 @@
 """Tests d'intégration — Refunds"""
+
 import pytest
+
 from sangho import SanghoNotFoundError
 
 pytestmark = pytest.mark.integration
 
 
 class TestRefundsIntegration:
-
     def test_list_refunds(self, client):
         result = client.refunds.list(page_size=5)
         assert "count" in result

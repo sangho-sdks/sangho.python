@@ -1,13 +1,15 @@
 """Tests d'intégration — Products"""
+
 import uuid
+
 import pytest
+
 from sangho import SanghoNotFoundError
 
 pytestmark = pytest.mark.integration
 
 
 class TestProductsIntegration:
-
     def test_create_product(self, client):
         product = client.products.create(
             name=f"Produit Test {uuid.uuid4().hex[:6]}",
@@ -34,9 +36,7 @@ class TestProductsIntegration:
         assert updated["price"] == 9999
 
     def test_archive_and_restore(self, client):
-        product = client.products.create(
-            name=f"Archive Test {uuid.uuid4().hex[:6]}", price=1000
-        )
+        product = client.products.create(name=f"Archive Test {uuid.uuid4().hex[:6]}", price=1000)
         archived = client.products.archive(product["id"])
         assert archived.get("status") in ("archived", "inactive")
 

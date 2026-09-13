@@ -1,12 +1,13 @@
 """Tests d'intégration — CheckoutSessions"""
+
 import pytest
+
 from sangho import SanghoNotFoundError
 
 pytestmark = pytest.mark.integration
 
 
 class TestCheckoutSessionsIntegration:
-
     def test_create_checkout_session(self, client):
         session = client.checkout_sessions.create(
             amount=20_000,

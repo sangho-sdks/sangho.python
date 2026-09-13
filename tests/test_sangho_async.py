@@ -2,9 +2,10 @@
 Tests for AsyncSangho — async twin of test_sangho.py.
 Uses respx to mock httpx.AsyncClient calls — no real network requests.
 """
+
+import httpx
 import pytest
 import respx
-import httpx
 
 import sangho
 from sangho import (
@@ -12,8 +13,8 @@ from sangho import (
     SanghoAuthError,
     SanghoNotFoundError,
     SanghoPublicKeyError,
-    SanghoValidationError,
     SanghoRateLimitError,
+    SanghoValidationError,
 )
 
 BASE = "https://api.sangho.ga/v1"
@@ -28,12 +29,28 @@ def client():
 # Resource wiring
 # ---------------------------------------------------------------------------
 
+
 def test_all_resources_wired(client):
     for name in (
-        "account", "addresses", "apps", "customers", "products", "payment_intents",
-        "payment_links", "checkout_sessions", "invoices", "transactions", "refunds",
-        "subscriptions", "payment_methods", "receipts", "webhooks", "security",
-        "partners", "terminal", "sandbox",
+        "account",
+        "addresses",
+        "apps",
+        "customers",
+        "products",
+        "payment_intents",
+        "payment_links",
+        "checkout_sessions",
+        "invoices",
+        "transactions",
+        "refunds",
+        "subscriptions",
+        "payment_methods",
+        "receipts",
+        "webhooks",
+        "security",
+        "partners",
+        "terminal",
+        "sandbox",
     ):
         assert hasattr(client, name)
 
@@ -47,6 +64,7 @@ def test_terminal_sub_resources(client):
 # ---------------------------------------------------------------------------
 # CRUD round-trips
 # ---------------------------------------------------------------------------
+
 
 @respx.mock
 async def test_customers_list(client):
@@ -98,16 +116,21 @@ async def test_sandbox_reset(client):
 # Error mapping (same behavior as the sync client)
 # ---------------------------------------------------------------------------
 
+
 @respx.mock
 async def test_401_raises_auth_error(client):
-    respx.get(f"{BASE}/customers/").mock(return_value=httpx.Response(401, json={"message": "bad key"}))
+    respx.get(f"{BASE}/customers/").mock(
+        return_value=httpx.Response(401, json={"message": "bad key"})
+    )
     with pytest.raises(SanghoAuthError):
         await client.customers.list()
 
 
 @respx.mock
 async def test_404_raises_not_found(client):
-    respx.get(f"{BASE}/customers/nope/").mock(return_value=httpx.Response(404, json={"message": "not found"}))
+    respx.get(f"{BASE}/customers/nope/").mock(
+        return_value=httpx.Response(404, json={"message": "not found"})
+    )
     with pytest.raises(SanghoNotFoundError):
         await client.customers.retrieve("nope")
 
@@ -148,9 +171,12 @@ def test_invalid_key_prefix():
 # sangho.error aliases resolve to the same exceptions as the sync client
 # ---------------------------------------------------------------------------
 
+
 @respx.mock
 async def test_error_aliases_catch_same_exception(client):
-    respx.get(f"{BASE}/customers/").mock(return_value=httpx.Response(401, json={"message": "bad key"}))
+    respx.get(f"{BASE}/customers/").mock(
+        return_value=httpx.Response(401, json={"message": "bad key"})
+    )
     with pytest.raises(sangho.error.AuthenticationError):
         await client.customers.list()
 
@@ -158,6 +184,7 @@ async def test_error_aliases_catch_same_exception(client):
 # ---------------------------------------------------------------------------
 # Async context manager
 # ---------------------------------------------------------------------------
+
 
 async def test_async_context_manager():
     async with AsyncSangho("sk_test_abc123456789") as c:

@@ -32,6 +32,9 @@ htmlcov/
 .dmypy.json
 .pytype/
 
+# ── Logs (dumps locaux pour debug) ─────────────────────────
+.logs/
+
 # ── IDE ───────────────────────────────────────────────────
 .vscode/
 .idea/

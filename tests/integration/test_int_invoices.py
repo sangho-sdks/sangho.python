@@ -1,5 +1,7 @@
 """Tests d'intégration — Invoices"""
+
 import pytest
+
 from sangho import SanghoNotFoundError
 
 pytestmark = pytest.mark.integration
@@ -19,7 +21,6 @@ def draft_invoice(client, test_customer):
 
 
 class TestInvoicesIntegration:
-
     def test_create_invoice(self, client, test_customer):
         invoice = client.invoices.create(
             customer=test_customer["id"],
@@ -40,9 +41,7 @@ class TestInvoicesIntegration:
         assert isinstance(result["results"], list)
 
     def test_void_invoice(self, client, test_customer):
-        invoice = client.invoices.create(
-            customer=test_customer["id"], amount=3000
-        )
+        invoice = client.invoices.create(customer=test_customer["id"], amount=3000)
         finalized = client.invoices.finalize(invoice["id"])
         voided = client.invoices.void(finalized["id"])
         assert voided.get("status") == "void"
