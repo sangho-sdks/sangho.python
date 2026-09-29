@@ -23,7 +23,7 @@ from sangho._errors import (
     _raise_for_status,
 )
 
-SDK_VERSION = "1.2.0"
+SDK_VERSION = "0.1.4"
 
 # Le backend distingue les clés de production ("prod") des clés de test
 # ("test") — il n'existe pas de préfixe "live" côté API Sangho.

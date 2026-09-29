@@ -11,7 +11,7 @@ class TestSubscriptionsIntegration:
     def test_list_subscriptions(self, client):
         result = client.subscriptions.list(page_size=5)
         assert "count" in result
-        assert isinstance(result["results"], list)
+        assert isinstance(result["data"], list)
 
     def test_retrieve_nonexistent_raises(self, client):
         with pytest.raises(SanghoNotFoundError):

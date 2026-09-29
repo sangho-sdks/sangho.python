@@ -8,7 +8,6 @@ from sangho import SanghoNotFoundError
 
 pytestmark = pytest.mark.integration
 
-
 class TestProductsIntegration:
     def test_create_product(self, client):
         product = client.products.create(
@@ -29,20 +28,11 @@ class TestProductsIntegration:
     def test_list_products(self, client):
         result = client.products.list(page_size=5)
         assert "count" in result
-        assert isinstance(result["results"], list)
+        assert isinstance(result["data"], list)
 
     def test_update_product_price(self, client, test_product):
         updated = client.products.update(test_product["id"], price=9999)
         assert updated["price"] == 9999
-
-    def test_archive_and_restore(self, client):
-        product = client.products.create(name=f"Archive Test {uuid.uuid4().hex[:6]}", price=1000)
-        archived = client.products.archive(product["id"])
-        assert archived.get("status") in ("archived", "inactive")
-
-        restored = client.products.restore(product["id"])
-        assert restored.get("status") in ("active",)
-        client.products.delete(product["id"])
 
     def test_delete_nonexistent_raises(self, client):
         with pytest.raises(SanghoNotFoundError):

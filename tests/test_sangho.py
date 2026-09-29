@@ -57,11 +57,11 @@ def test_public_key_on_write(pub_client):
 
 @respx.mock
 def test_customers_list(client):
-    payload = {"count": 1, "next": None, "previous": None, "results": [{"id": "cust_1"}]}
+    payload = {"count": 1, "next": None, "previous": None, "data": [{"id": "cust_1"}]}
     respx.get(f"{BASE}/customers/").mock(return_value=httpx.Response(200, json=payload))
     result = client.customers.list()
     assert result["count"] == 1
-    assert result["results"][0]["id"] == "cust_1"
+    assert result["data"][0]["id"] == "cust_1"
 
 
 @respx.mock

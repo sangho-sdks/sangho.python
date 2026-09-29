@@ -11,7 +11,7 @@ class TestPaymentMethodsIntegration:
     def test_list_payment_methods(self, client):
         result = client.payment_methods.list(page_size=5)
         assert "count" in result
-        assert isinstance(result["results"], list)
+        assert isinstance(result["data"], list)
 
     def test_retrieve_nonexistent_raises(self, client):
         with pytest.raises(SanghoNotFoundError):

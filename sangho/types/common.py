@@ -9,7 +9,7 @@ class PaginatedResponse(TypedDict):
     count: int
     next: str | None
     previous: str | None
-    results: list[dict]
+    data: list[dict]
 
 
 class CustomerDict(TypedDict, total=False):

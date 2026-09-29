@@ -31,10 +31,5 @@ class Apps(BaseResource):
         self._client.assert_secret_key("apps.keys")
         return self._client.get(f"{self._path}{id}/keys/")
 
-    def roll_secret(self, id: str) -> dict:
-        """Rotate the secret key for an app."""
-        self._client.assert_secret_key("apps.roll_secret")
-        return self._client.post(f"{self._path}{id}/roll-secret/")
-
     def options(self) -> dict:
         return self._client.options(self._path)

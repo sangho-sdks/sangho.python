@@ -38,12 +38,11 @@ class TestInvoicesIntegration:
     def test_list_invoices(self, client):
         result = client.invoices.list(page_size=5)
         assert "count" in result
-        assert isinstance(result["results"], list)
+        assert isinstance(result["data"], list)
 
     def test_void_invoice(self, client, test_customer):
         invoice = client.invoices.create(customer=test_customer["id"], amount=3000)
-        finalized = client.invoices.finalize(invoice["id"])
-        voided = client.invoices.void(finalized["id"])
+        voided = client.invoices.void(invoice["id"])
         assert voided.get("status") == "void"
 
     def test_retrieve_nonexistent_raises(self, client):

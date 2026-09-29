@@ -21,7 +21,7 @@ class TestCheckoutSessionsIntegration:
     def test_list_checkout_sessions(self, client):
         result = client.checkout_sessions.list(page_size=5)
         assert "count" in result
-        assert isinstance(result["results"], list)
+        assert isinstance(result["data"], list)
 
     def test_retrieve_nonexistent_raises(self, client):
         with pytest.raises(SanghoNotFoundError):

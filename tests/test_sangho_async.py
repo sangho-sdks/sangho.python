@@ -69,7 +69,7 @@ def test_terminal_sub_resources(client):
 @respx.mock
 async def test_customers_list(client):
     respx.get(f"{BASE}/customers/").mock(
-        return_value=httpx.Response(200, json={"count": 1, "results": [{"id": "cust_1"}]})
+        return_value=httpx.Response(200, json={"count": 1, "data": [{"id": "cust_1"}]})
     )
     result = await client.customers.list()
     assert result["count"] == 1

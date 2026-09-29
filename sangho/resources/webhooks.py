@@ -50,6 +50,18 @@ class Webhooks(BaseResource):
         self._client.assert_secret_key("webhooks.list_deliveries")
         return self._client.get(f"{self._path}{id}/deliveries/", params=criteria or None)
 
+    def disable(self, id: str) -> dict:
+        self._client.assert_secret_key("webhooks.disable")
+        return self._client.post(f"{self._path}{id}/disable/")
+
+    def enable(self, id: str) -> dict:
+        self._client.assert_secret_key("webhooks.enable")
+        return self._client.post(f"{self._path}{id}/enable/")
+
+    def retrieve_delivery(self, id: str, delivery_id: str) -> dict:
+        self._client.assert_secret_key("webhooks.retrieve_delivery")
+        return self._client.get(f"{self._path}{id}/deliveries/{delivery_id}/")
+
     def retry_delivery(self, id: str, delivery_id: str) -> dict:
         self._client.assert_secret_key("webhooks.retry_delivery")
         return self._client.post(f"{self._path}{id}/deliveries/{delivery_id}/retry/")

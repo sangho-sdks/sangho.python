@@ -31,10 +31,5 @@ class Apps(AsyncBaseResource):
         self._client.assert_secret_key("apps.keys")
         return await self._client.get(f"{self._path}{id}/keys/")
 
-    async def roll_secret(self, id: str) -> dict:
-        """Rotate the secret key for an app."""
-        self._client.assert_secret_key("apps.roll_secret")
-        return await self._client.post(f"{self._path}{id}/roll-secret/")
-
     async def options(self) -> dict:
         return await self._client.options(self._path)

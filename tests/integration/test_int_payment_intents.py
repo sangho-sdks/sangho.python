@@ -50,12 +50,12 @@ class TestPaymentIntentsIntegration:
     def test_list_payment_intents_paginated(self, client):
         result = client.payment_intents.list(page_size=5)
         assert "count" in result
-        assert "results" in result
-        assert isinstance(result["results"], list)
+        assert "data" in result
+        assert isinstance(result["data"], list)
 
     def test_list_filter_by_customer(self, client, test_customer, payment_intent):
         result = client.payment_intents.list(customer=test_customer["id"])
-        ids = [pi["id"] for pi in result["results"]]
+        ids = [pi["id"] for pi in result["data"]]
         assert payment_intent["id"] in ids
 
     def test_cancel_payment_intent(self, client, test_customer):

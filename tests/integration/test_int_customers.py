@@ -1,6 +1,6 @@
 """
 Tests d'intégration — Customers
-Couvre : list, retrieve, create, update, delete, list_transactions
+Couvre : list, retrieve, create, update, delete
 """
 
 import uuid
@@ -10,7 +10,6 @@ import pytest
 from sangho import SanghoNotFoundError, SanghoPublicKeyError, SanghoValidationError
 
 pytestmark = pytest.mark.integration
-
 
 class TestCustomersIntegration:
     # ── CRUD complet ─────────────────────────────────────────────────────────
@@ -41,25 +40,25 @@ class TestCustomersIntegration:
         result = client.customers.list(page_size=5)
 
         assert "count" in result
-        assert "results" in result
+        assert "data" in result
         assert "next" in result
         assert "previous" in result
-        assert isinstance(result["results"], list)
-        assert len(result["results"]) <= 5
+        assert isinstance(result["data"], list)
+        assert len(result["data"]) <= 5
 
     def test_list_customers_filter_by_status(self, client):
         """Filtre par statut active."""
         result = client.customers.list(status="active", page_size=10)
 
-        assert "results" in result
-        for c in result["results"]:
+        assert "data" in result
+        for c in result["data"]:
             assert c.get("status") == "active"
 
     def test_list_customers_search(self, client, test_customer):
         """Recherche full-text par email."""
         result = client.customers.list(search=test_customer["email"])
 
-        ids = [c["id"] for c in result["results"]]
+        ids = [c["id"] for c in result["data"]]
         assert test_customer["id"] in ids
 
     def test_update_customer(self, client, test_customer):
@@ -77,12 +76,6 @@ class TestCustomersIntegration:
         customer = client.customers.create(email=email, name="À supprimer")
         result = client.customers.delete(customer["id"])
         assert result is None
-
-    def test_list_transactions_for_customer(self, client, test_customer):
-        """list_transactions() retourne une liste paginée (peut être vide)."""
-        result = client.customers.list_transactions(test_customer["id"])
-        assert "results" in result
-        assert isinstance(result["results"], list)
 
     # ── Erreurs ───────────────────────────────────────────────────────────────
 

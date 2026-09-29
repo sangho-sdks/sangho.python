@@ -37,5 +37,10 @@ class Subscriptions(AsyncBaseResource):
         self._client.assert_secret_key("subscriptions.resume")
         return await self._client.post(f"{self._path}{id}/resume/")
 
+    async def reactivate(self, id: str) -> dict:
+        """Reactivate a subscription that was set to cancel at period end."""
+        self._client.assert_secret_key("subscriptions.reactivate")
+        return await self._client.post(f"{self._path}{id}/reactivate/")
+
     async def options(self) -> dict:
         return await self._client.options(self._path)

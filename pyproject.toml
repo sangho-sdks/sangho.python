@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "sangho"
-version = "1.2.0"
+version = "0.1.4"
 description = "SDK officiel Python pour l'API Sangho"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -14,7 +14,7 @@ keywords = ["sangho", "payments", "afrique", "xaf", "mobile-money", "sdk", "pyth
 dependencies = ["httpx>=0.27.0"]
 
 classifiers = [
-  "Development Status :: 5 - Production/Stable",
+  "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
   "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3",

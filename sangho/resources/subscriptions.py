@@ -35,5 +35,10 @@ class Subscriptions(BaseResource):
         self._client.assert_secret_key("subscriptions.resume")
         return self._client.post(f"{self._path}{id}/resume/")
 
+    def reactivate(self, id: str) -> dict:
+        """Reactivate a subscription that was set to cancel at period end."""
+        self._client.assert_secret_key("subscriptions.reactivate")
+        return self._client.post(f"{self._path}{id}/reactivate/")
+
     def options(self) -> dict:
         return self._client.options(self._path)

@@ -14,7 +14,7 @@ class TestAuthIntegration:
     def test_valid_secret_key_authenticates(self, client):
         """Une clé secrète valide doit permettre de lister les customers."""
         result = client.customers.list(page_size=1)
-        assert "results" in result
+        assert "data" in result
 
     def test_invalid_key_raises_auth_error(self, base_url):
         """Une clé invalide doit lever SanghoAuthError (401)."""

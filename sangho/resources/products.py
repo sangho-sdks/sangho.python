@@ -32,13 +32,5 @@ class Products(BaseResource):
         self._client.assert_secret_key("products.delete")
         return self._client.delete(f"{self._path}{id}/")
 
-    def archive(self, id: str) -> dict:
-        self._client.assert_secret_key("products.archive")
-        return self._client.post(f"{self._path}{id}/archive/")
-
-    def restore(self, id: str) -> dict:
-        self._client.assert_secret_key("products.restore")
-        return self._client.post(f"{self._path}{id}/restore/")
-
     def options(self) -> dict:
         return self._client.options(self._path)

@@ -32,13 +32,5 @@ class Products(AsyncBaseResource):
         self._client.assert_secret_key("products.delete")
         return await self._client.delete(f"{self._path}{id}/")
 
-    async def archive(self, id: str) -> dict:
-        self._client.assert_secret_key("products.archive")
-        return await self._client.post(f"{self._path}{id}/archive/")
-
-    async def restore(self, id: str) -> dict:
-        self._client.assert_secret_key("products.restore")
-        return await self._client.post(f"{self._path}{id}/restore/")
-
     async def options(self) -> dict:
         return await self._client.options(self._path)

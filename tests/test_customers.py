@@ -23,13 +23,13 @@ def test_list_customers(client):
                 "count": 1,
                 "next": None,
                 "previous": None,
-                "results": [{"id": "cust_1", "email": "a@b.com"}],
+                "data": [{"id": "cust_1", "email": "a@b.com"}],
             },
         )
     )
     result = client.customers.list()
     assert result["count"] == 1
-    assert result["results"][0]["email"] == "a@b.com"
+    assert result["data"][0]["email"] == "a@b.com"
 
 
 @respx.mock

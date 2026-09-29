@@ -9,12 +9,30 @@ Ce projet respecte le [Semantic Versioning](https://semver.org/lang/fr/).
 
 ## [Unreleased]
 
+> **Versionnement.** Les versions 1.0.0 à 1.2.0 ci-dessous étaient internes : ce SDK n'a jamais été publié
+> (PyPI). La numérotation est réalignée sur celle du SDK JS (`@sanghosdk/js` 0.1.4, seul SDK publié), comme le
+> demande `CONTRIBUTING.md` (« tous les SDKs sont versionnés de façon synchronisée »). Version courante : **0.1.4**.
+
 ### Added
+- `subscriptions.reactivate(id)` — `POST /subscriptions/{id}/reactivate/`.
+- `webhooks.enable(id)`, `webhooks.disable(id)`, `webhooks.retrieve_delivery(id, delivery_id)`.
+- `receipts.get_pdf_url(id)` — `GET /receipts/{id}/pdf/` (URL signée `{url, expires_at}`).
+- `payment_intents.delete(id)` — `DELETE /payment-intents/{id}/` (alias de `cancel`, comme chez Stripe).
+
 ### Changed
-### Deprecated
+- **Breaking** : `PaginatedResponse` expose `data` (et non `results`), conformément à la pagination réelle de l'API.
+- `customers.list_payment_methods(id)` filtre `GET /payment-methods/?customer=<id>` (la route
+  `/customers/{id}/payment-methods/` n'existe pas côté API).
+
 ### Removed
+Méthodes qui appelaient des routes **inexistantes** côté API (elles répondaient 404/405) :
+`apps.roll_secret`, `customers.list_transactions` (l'API n'a pas de filtre `customer` sur les transactions),
+`invoices.finalize`, `partners.create/update/delete` (ressource en lecture seule),
+`payment_methods.create/update/delete` (utiliser `attach`/`detach`/`set_default`), `products.archive/restore`,
+`receipts.send`, `refunds.update`, `security.roll_secret_key/list_sessions/revoke_session`.
+
 ### Fixed
-### Security
+- Version du SDK (`__version__`, en-tête `X-Sangho-SDK`, `pyproject.toml`) alignée sur 0.1.4.
 
 ---
 

@@ -45,5 +45,10 @@ class PaymentIntents(AsyncBaseResource):
         self._client.assert_secret_key("payment_intents.cancel")
         return await self._client.post(f"{self._path}{id}/cancel/", body=payloads)
 
+    async def delete(self, id: str) -> dict:
+        """Cancel a payment intent (``DELETE`` is an alias of :meth:`cancel`, as in Stripe)."""
+        self._client.assert_secret_key("payment_intents.delete")
+        return await self._client.delete(f"{self._path}{id}/")
+
     async def options(self) -> dict:
         return await self._client.options(self._path)

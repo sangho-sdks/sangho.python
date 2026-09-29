@@ -44,7 +44,7 @@ class TestWebhooksIntegration:
 
     def test_list_webhooks(self, client):
         result = client.webhooks.list()
-        assert "results" in result
+        assert "data" in result
 
     def test_update_webhook(self, client, test_webhook):
         updated = client.webhooks.update(
@@ -59,7 +59,7 @@ class TestWebhooksIntegration:
 
     def test_list_deliveries(self, client, test_webhook):
         result = client.webhooks.list_deliveries(test_webhook["id"])
-        assert "results" in result
+        assert "data" in result
 
     def test_delete_nonexistent_raises(self, client):
         with pytest.raises(SanghoNotFoundError):

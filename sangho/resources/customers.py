@@ -13,7 +13,6 @@ class Customers(BaseResource):
     sangho.customers.update(id, **payloads)
     sangho.customers.delete(id)
     sangho.customers.options()
-    sangho.customers.list_transactions(id, **criteria)
     sangho.customers.list_payment_methods(id)
     """
 
@@ -31,7 +30,7 @@ class Customers(BaseResource):
             page_size: Items per page (default 20, max 100)
 
         Returns:
-            {"count": int, "next": str|None, "previous": str|None, "results": [...]}
+            {"count": int, "next": str|None, "previous": str|None, "data": [...]}
         """
         self._client.assert_secret_key("customers.list")
         return self._client.get(self._path, params=criteria or None)
@@ -64,16 +63,12 @@ class Customers(BaseResource):
         self._client.assert_secret_key("customers.delete")
         return self._client.delete(f"{self._path}{id}/")
 
+    def list_payment_methods(self, id: str, **criteria) -> dict:
+        """List a customer's payment methods (``GET /payment-methods/?customer=<id>``)."""
+        self._client.assert_secret_key("customers.list_payment_methods")
+        params = {**criteria, "customer": id}
+        return self._client.get("/payment-methods/", params=params)
+
     def options(self) -> dict:
         """DRF schema metadata."""
         return self._client.options(self._path)
-
-    def list_transactions(self, id: str, **criteria) -> dict:
-        """List all transactions for a given customer."""
-        self._client.assert_secret_key("customers.list_transactions")
-        return self._client.get(f"{self._path}{id}/transactions/", params=criteria or None)
-
-    def list_payment_methods(self, id: str) -> dict:
-        """List all payment methods attached to a given customer."""
-        self._client.assert_secret_key("customers.list_payment_methods")
-        return self._client.get(f"{self._path}{id}/payment-methods/")

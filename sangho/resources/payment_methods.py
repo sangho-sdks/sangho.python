@@ -14,18 +14,6 @@ class PaymentMethods(BaseResource):
         self._client.assert_secret_key("payment_methods.retrieve")
         return self._client.get(f"{self._path}{id}/")
 
-    def create(self, type: str, **opts) -> dict:
-        self._client.assert_secret_key("payment_methods.create")
-        return self._client.post(self._path, body={"type": type, **opts})
-
-    def update(self, id: str, **payloads) -> dict:
-        self._client.assert_secret_key("payment_methods.update")
-        return self._client.patch(f"{self._path}{id}/", body=payloads)
-
-    def delete(self, id: str) -> None:
-        self._client.assert_secret_key("payment_methods.delete")
-        return self._client.delete(f"{self._path}{id}/")
-
     def set_default(self, id: str) -> dict:
         self._client.assert_secret_key("payment_methods.set_default")
         return self._client.post(f"{self._path}{id}/set-default/")

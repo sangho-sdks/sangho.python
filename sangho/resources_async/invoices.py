@@ -31,10 +31,6 @@ class Invoices(AsyncBaseResource):
         self._client.assert_secret_key("invoices.pay")
         return await self._client.post(f"{self._path}{id}/pay/", body=payloads)
 
-    async def finalize(self, id: str) -> dict:
-        self._client.assert_secret_key("invoices.finalize")
-        return await self._client.post(f"{self._path}{id}/finalize/")
-
     async def void(self, id: str) -> dict:
         self._client.assert_secret_key("invoices.void")
         return await self._client.post(f"{self._path}{id}/void/")

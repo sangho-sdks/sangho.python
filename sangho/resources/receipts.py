@@ -14,11 +14,10 @@ class Receipts(BaseResource):
         self._client.assert_secret_key("receipts.retrieve")
         return self._client.get(f"{self._path}{id}/")
 
-    def send(self, id: str, email: str | None = None) -> dict:
-        """Send receipt by email."""
-        self._client.assert_secret_key("receipts.send")
-        body = {"email": email} if email else {}
-        return self._client.post(f"{self._path}{id}/send/", body=body)
+    def get_pdf_url(self, id: str) -> dict:
+        """Return a signed, expiring URL to the receipt PDF: {"url", "expires_at"}."""
+        self._client.assert_secret_key("receipts.get_pdf_url")
+        return self._client.get(f"{self._path}{id}/pdf/")
 
     def options(self) -> dict:
         return self._client.options(self._path)

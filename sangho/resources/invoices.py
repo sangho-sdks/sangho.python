@@ -31,10 +31,6 @@ class Invoices(BaseResource):
         self._client.assert_secret_key("invoices.pay")
         return self._client.post(f"{self._path}{id}/pay/", body=payloads)
 
-    def finalize(self, id: str) -> dict:
-        self._client.assert_secret_key("invoices.finalize")
-        return self._client.post(f"{self._path}{id}/finalize/")
-
     def void(self, id: str) -> dict:
         self._client.assert_secret_key("invoices.void")
         return self._client.post(f"{self._path}{id}/void/")

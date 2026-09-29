@@ -30,18 +30,5 @@ class Security(AsyncBaseResource):
         remaining = [ip for ip in profile.get("allowed_ips", []) if ip not in ips]
         return await self.update(allowed_ips=remaining)
 
-    async def roll_secret_key(self) -> dict:
-        """Rotate the secret key. Returns the new key (shown once)."""
-        self._client.assert_secret_key("security.roll_secret_key")
-        return await self._client.post(f"{self._path}roll-secret/")
-
-    async def list_sessions(self, **criteria) -> dict:
-        self._client.assert_secret_key("security.list_sessions")
-        return await self._client.get(f"{self._path}sessions/", params=criteria or None)
-
-    async def revoke_session(self, session_id: str) -> None:
-        self._client.assert_secret_key("security.revoke_session")
-        return await self._client.delete(f"{self._path}sessions/{session_id}/")
-
     async def options(self) -> dict:
         return await self._client.options(self._path)

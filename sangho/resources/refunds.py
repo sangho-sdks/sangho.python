@@ -24,10 +24,6 @@ class Refunds(BaseResource):
         self._client.assert_secret_key("refunds.create")
         return self._client.post(self._path, body={"transaction": transaction, **opts})
 
-    def update(self, id: str, **payloads) -> dict:
-        self._client.assert_secret_key("refunds.update")
-        return self._client.patch(f"{self._path}{id}/", body=payloads)
-
     def cancel(self, id: str) -> dict:
         self._client.assert_secret_key("refunds.cancel")
         return self._client.post(f"{self._path}{id}/cancel/")
