@@ -2,6 +2,7 @@ from sangho.resources.account import Account
 from sangho.resources.addresses import Addresses
 from sangho.resources.apps import Apps
 from sangho.resources.checkout_sessions import CheckoutSessions
+from sangho.resources.connect import Connect
 from sangho.resources.customers import Customers
 from sangho.resources.invoices import Invoices
 from sangho.resources.partners import Partners
@@ -27,6 +28,7 @@ __all__ = [
     "PaymentIntents",
     "PaymentLinks",
     "CheckoutSessions",
+    "Connect",
     "Invoices",
     "Transactions",
     "Refunds",

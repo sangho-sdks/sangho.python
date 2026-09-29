@@ -7,7 +7,7 @@ import json
 import time
 
 from sangho._base import BaseResource
-from sangho._errors import SanghoError
+from sangho._errors import SanghoError, SanghoWebhookSignatureError
 
 
 class Webhooks(BaseResource):
@@ -61,27 +61,69 @@ class Webhooks(BaseResource):
     def construct_event(
         payload: str | bytes,
         signature_header: str,
-        secret: str,
+        secret: str | builtins.list[str],
         tolerance: int = 300,
     ) -> dict:
-        """Verify HMAC-SHA256 signature and return parsed event dict."""
+        """Vérifie la signature HMAC-SHA256 et retourne l'événement (dict).
+
+        ``Sangho-Signature: t=<ts>,v1=<hex>[,v1=<hex>…]`` ; message signé ``"<ts>.<corps brut>"``. Plusieurs ``v1``
+        (et une liste de secrets) sont acceptés pour la rotation ; comparaison à temps constant. Lève
+        `SanghoWebhookSignatureError` (``reason`` : ``malformed`` / ``expired`` / ``mismatch``), sous-classe de
+        `SanghoError`. Le corps doit être le corps BRUT (octets) reçu.
+        """
         if isinstance(payload, str):
             payload = payload.encode()
 
-        parts = dict(p.split("=", 1) for p in signature_header.split(",") if "=" in p)
-        timestamp = parts.get("t")
-        received_sig = parts.get("v1")
+        timestamp, signatures = Webhooks._parse_header(signature_header)
 
-        if not timestamp or not received_sig:
-            raise SanghoError("Invalid Sangho-Signature header.", code="invalid_signature")
-
-        if abs(time.time() - int(timestamp)) > tolerance:
-            raise SanghoError("Webhook timestamp too old.", code="stale_event")
+        if abs(time.time() - timestamp) > tolerance:
+            raise SanghoWebhookSignatureError("expired", "Webhook timestamp too old.")
 
         signed_payload = f"{timestamp}.".encode() + payload
-        expected = hmac.new(secret.encode(), signed_payload, hashlib.sha256).hexdigest()
+        secrets = [secret] if isinstance(secret, str) else list(secret)
+        matched = False
+        for candidate in secrets:
+            if not candidate:
+                continue
+            expected = hmac.new(candidate.encode(), signed_payload, hashlib.sha256).hexdigest()
+            for received in signatures:  # pas de court-circuit : temps indépendant du v1 correspondant
+                if hmac.compare_digest(expected, received):
+                    matched = True
+        if not matched:
+            raise SanghoWebhookSignatureError("mismatch", "Webhook signature mismatch.")
 
-        if not hmac.compare_digest(expected, received_sig):
-            raise SanghoError("Webhook signature mismatch.", code="invalid_signature")
+        try:
+            return json.loads(payload)
+        except ValueError:
+            raise SanghoError("Webhook body is not valid JSON.", code="invalid_payload", status_code=400) from None
 
-        return json.loads(payload)
+    @staticmethod
+    def _parse_header(header: str) -> tuple[int, builtins.list[str]]:
+        malformed = SanghoWebhookSignatureError("malformed", "Invalid Sangho-Signature header.")
+        if not isinstance(header, str) or not header:
+            raise malformed
+        timestamp: int | None = None
+        signatures: builtins.list[str] = []
+        for part in header.split(","):
+            key, sep, value = part.partition("=")
+            if not sep:
+                continue
+            key, value = key.strip(), value.strip()
+            if key == "t":
+                if not value.isdigit():
+                    raise malformed
+                timestamp = int(value)
+            elif key == "v1" and value:
+                signatures.append(value)
+        if timestamp is None or not signatures:
+            raise malformed
+        return timestamp, signatures
+
+    @staticmethod
+    def generate_test_header(payload: str | bytes, secret: str, timestamp: int | None = None) -> str:
+        """Génère un en-tête ``Sangho-Signature`` valide pour tester votre endpoint."""
+        if isinstance(payload, str):
+            payload = payload.encode()
+        ts = int(time.time()) if timestamp is None else int(timestamp)
+        digest = hmac.new(secret.encode(), f"{ts}.".encode() + payload, hashlib.sha256).hexdigest()
+        return f"t={ts},v1={digest}"

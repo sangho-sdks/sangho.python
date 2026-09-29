@@ -18,6 +18,7 @@ from sangho.resources import (
     Addresses,
     Apps,
     CheckoutSessions,
+    Connect,
     Customers,
     Invoices,
     Partners,
@@ -51,7 +52,7 @@ class Sangho:
 
         # Côté serveur — clé secrète
         client = Sangho("sk_prod_xxx")
-        intent = client.payment_intents.create(amount=5000, customer="cust_xxx")
+        intent = client.payment_intents.create(amount=5000, currency="XAF")
 
         # Côté navigateur — clé publique (checkout uniquement)
         client = Sangho("pk_prod_xxx")
@@ -85,6 +86,7 @@ class Sangho:
         self.security = Security(self._client)
         self.partners = Partners(self._client)
         self.terminal = Terminal(self._client)
+        self.connect = Connect(self._client)
         self.sandbox = Sandbox(self._client)
 
     # Vérifie et parse un événement webhook entrant (signature HMAC-SHA256 +
@@ -99,6 +101,7 @@ class Sangho:
     #     if event["type"] == "payment_intent.succeeded":
     #         fulfill_order(event["data"])
     construct_event = staticmethod(Webhooks.construct_event)
+    generate_test_header = staticmethod(Webhooks.generate_test_header)
 
     @property
     def api_key(self) -> str:

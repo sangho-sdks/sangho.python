@@ -116,14 +116,35 @@ class SanghoPermissionError(SanghoError):
         message: str = "You do not have permission to perform this action.",
         status_code: int = 403,
         raw: dict | None = None,
+        code: str = "permission_denied",
     ):
         super().__init__(
             message,
-            code="permission_denied",
+            code=code,
             status_code=status_code,
             raw=raw,
             type_="PERMISSION_ERROR",
         )
+
+
+class SanghoPlatformPartnerRequiredError(SanghoPermissionError):
+    """403 — App valide (clé secrète correcte) mais sans le statut **Partenaire
+    Plateforme** requis pour appeler ``connect.*``. Ce statut est accordé
+    manuellement par Sangho (revue back-office) après une demande faite depuis
+    le dashboard — ce n'est pas une histoire de clé ou de plan tarifaire, donc
+    distinct de `SanghoPublicKeyError`. Sous-classe de `SanghoPermissionError` :
+    un `except SanghoPermissionError` générique continue de l'attraper.
+    """
+
+    def __init__(
+        self,
+        message: str = (
+            "This App does not have Platform Partner status. Request it from the "
+            "Sangho dashboard before calling Connect endpoints."
+        ),
+        raw: dict | None = None,
+    ):
+        super().__init__(message, raw=raw, code="platform_partner_required")
 
 
 class SanghoNotFoundError(SanghoError):
@@ -187,6 +208,37 @@ class SanghoRateLimitError(SanghoError):
         self.retry_after = retry_after
 
 
+class SanghoConflictError(SanghoError):
+    """409 — Conflit d'état métier autre qu'une clé d'idempotence (ex : `account_not_claimed`, `account_disabled`).
+    Le code précis est dans `code`."""
+
+    def __init__(
+        self,
+        message: str = "Conflict with the current state of the resource.",
+        raw: dict | None = None,
+    ):
+        super().__init__(
+            message, code="conflict", status_code=409, raw=raw, type_="CONFLICT_ERROR"
+        )
+
+
+class SanghoWebhookSignatureError(SanghoError):
+    """Signature de webhook refusée. `reason` : ``malformed`` (en-tête illisible, statut 400),
+    ``expired`` (horodatage hors tolérance, 400) ou ``mismatch`` (aucune signature ne correspond, 401).
+
+    Sous-classe de `SanghoError` : les anciens ``except SanghoError`` continuent de fonctionner, et
+    `code` garde les valeurs historiques (``invalid_signature``, ``stale_event``)."""
+
+    def __init__(self, reason: str, message: str):
+        super().__init__(
+            message,
+            code="invalid_signature" if reason != "expired" else "stale_event",
+            status_code=401 if reason == "mismatch" else 400,
+            type_="AUTHENTICATION_ERROR" if reason == "mismatch" else "VALIDATION_ERROR",
+        )
+        self.reason = reason
+
+
 class SanghoNetworkError(SanghoError):
     """Network error (no response from the server). SDK-only category — the
     request never reached the backend, so there is no `raw`/business `code`."""
@@ -206,6 +258,10 @@ class SanghoTimeoutError(SanghoError):
 
 def _raise_for_status(response: httpx.Response, data: dict) -> None:
     """Raise the appropriate SanghoError based on the HTTP status code."""
+    # Les routes Connect renvoient `{"error": {"code", "message"}}` : on aplatit pour lire le même format partout.
+    nested = data.get("error") if isinstance(data, dict) else None
+    if isinstance(nested, dict):
+        data = {**data, **nested}
     message = data.get("message") or data.get("detail") or "API error"
     if isinstance(message, (dict, list)):
         message = str(message)
@@ -222,11 +278,17 @@ def _raise_for_status(response: httpx.Response, data: dict) -> None:
         case 403:
             if code == "public_key_not_allowed":
                 raise SanghoPublicKeyError(message, raw=data)
+            if code == "platform_partner_required":
+                raise SanghoPlatformPartnerRequiredError(message, raw=data)
             raise SanghoPermissionError(message, raw=data)
         case 404:
             raise SanghoNotFoundError(message, raw=data)
         case 409:
-            raise SanghoIdempotencyError(raw=data)
+            # Sans code (ancien backend) ou `idempotency_conflict` : clé d'idempotence rejouée avec un autre
+            # corps ; tout autre code est un conflit d'état métier (ex : `account_not_claimed`).
+            if not code or code == "idempotency_conflict":
+                raise SanghoIdempotencyError(raw=data)
+            raise SanghoConflictError(message, raw=data)
         case 422:
             raise SanghoValidationError(raw=data)
         case 429:
