@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       bump:
-        description: "Type de version"
+        description: "Type de version (current = publie la version actuelle sans la changer)"
         required: true
-        default: patch
+        default: current
         type: choice
-        options: [patch, minor, major]
+        options: [current, patch, minor, major]
 
 permissions:
   contents: write
