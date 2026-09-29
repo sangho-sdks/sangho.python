@@ -25,20 +25,23 @@ Async usage::
 from sangho import error
 from sangho._errors import (
     SanghoAuthError,
+    SanghoConflictError,
     SanghoError,
     SanghoIdempotencyError,
     SanghoNetworkError,
     SanghoNotFoundError,
     SanghoPermissionError,
+    SanghoPlatformPartnerRequiredError,
     SanghoPublicKeyError,
     SanghoRateLimitError,
     SanghoTimeoutError,
     SanghoValidationError,
+    SanghoWebhookSignatureError,
 )
 from sangho.sangho import Sangho
 from sangho.sangho_async import AsyncSangho
 
-__version__ = "0.1.4"
+__version__ = "0.2.0"
 __all__ = [
     "Sangho",
     "AsyncSangho",
@@ -47,8 +50,11 @@ __all__ = [
     "SanghoAuthError",
     "SanghoPublicKeyError",
     "SanghoPermissionError",
+    "SanghoPlatformPartnerRequiredError",
     "SanghoNotFoundError",
     "SanghoIdempotencyError",
+    "SanghoConflictError",
+    "SanghoWebhookSignatureError",
     "SanghoValidationError",
     "SanghoRateLimitError",
     "SanghoNetworkError",

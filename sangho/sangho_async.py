@@ -31,6 +31,7 @@ from sangho.resources_async import (
     Addresses,
     Apps,
     CheckoutSessions,
+    Connect,
     Customers,
     Invoices,
     Partners,
@@ -90,11 +91,13 @@ class AsyncSangho:
         self.security = Security(self._client)
         self.partners = Partners(self._client)
         self.terminal = Terminal(self._client)
+        self.connect = Connect(self._client)
         self.sandbox = Sandbox(self._client)
 
     # Identique à Sangho.construct_event — vérification de signature pure
     # (aucun I/O), donc pas besoin d'une version async dédiée.
     construct_event = staticmethod(Webhooks.construct_event)
+    generate_test_header = staticmethod(Webhooks.generate_test_header)
 
     @property
     def api_key(self) -> str:

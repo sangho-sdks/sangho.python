@@ -69,3 +69,4 @@ class Webhooks(AsyncBaseResource):
     # réutilise directement l'implémentation synchrone plutôt que de la
     # dupliquer (une seule source de vérité pour la logique crypto).
     construct_event = staticmethod(_SyncWebhooks.construct_event)
+    generate_test_header = staticmethod(_SyncWebhooks.generate_test_header)

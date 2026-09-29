@@ -71,10 +71,21 @@ class AsyncHttpClient:
     async def get(self, path: str, params: dict | None = None) -> Any:
         return await self._request("GET", path, params=params)
 
-    async def post(self, path: str, body: dict | None = None) -> Any:
-        idempotency_key = str(uuid.uuid4())
+    async def post(
+        self, path: str, body: dict | None = None, idempotency_key: str | None = None
+    ) -> Any:
+        """POST avec en-tête ``Idempotency-Key``. La clé peut être fournie en argument ou via
+        ``idempotency_key=`` dans les options de n'importe quelle méthode d'écriture ; sans clé, une
+        nouvelle est générée. Sans clé fournie, un POST n'est PAS rejoué après un timeout / une
+        erreur réseau (le serveur a pu traiter la requête : risque de doublon, PY-03)."""
+        body = dict(body or {})
+        explicit = idempotency_key or body.pop("idempotency_key", None)
         return await self._request(
-            "POST", path, json=body or {}, headers={"Idempotency-Key": idempotency_key}
+            "POST",
+            path,
+            json=body,
+            headers={"Idempotency-Key": explicit or str(uuid.uuid4())},
+            _retry_transport=bool(explicit),
         )
 
     async def put(self, path: str, body: dict | None = None) -> Any:
@@ -96,19 +107,21 @@ class AsyncHttpClient:
     async def _request(self, method: str, path: str, **kwargs) -> Any:
         url = f"{self.base_url}{path}"
         extra_headers: dict = kwargs.pop("headers", {})
+        # Timeout / erreur réseau : on ne rejoue pas un POST sans clé d'idempotence fournie par l'appelant
+        retry_transport: bool = kwargs.pop("_retry_transport", True)
         attempt = 0
 
         while True:
             try:
                 response = await self._client.request(method, url, headers=extra_headers, **kwargs)
             except httpx.TimeoutException:
-                if attempt < self.max_retries:
+                if retry_transport and attempt < self.max_retries:
                     await asyncio.sleep(self._backoff(attempt))
                     attempt += 1
                     continue
                 raise SanghoTimeoutError(self._timeout) from None
             except httpx.RequestError as exc:
-                if attempt < self.max_retries:
+                if retry_transport and attempt < self.max_retries:
                     await asyncio.sleep(self._backoff(attempt))
                     attempt += 1
                     continue

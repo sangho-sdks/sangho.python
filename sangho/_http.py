@@ -23,7 +23,7 @@ from sangho._errors import (
     _raise_for_status,
 )
 
-SDK_VERSION = "0.1.4"
+SDK_VERSION = "0.2.0"
 
 # Le backend distingue les clés de production ("prod") des clés de test
 # ("test") — il n'existe pas de préfixe "live" côté API Sangho.
@@ -104,10 +104,19 @@ class HttpClient:
     def get(self, path: str, params: dict | None = None) -> Any:
         return self._request("GET", path, params=params)
 
-    def post(self, path: str, body: dict | None = None) -> Any:
-        idempotency_key = str(uuid.uuid4())
+    def post(self, path: str, body: dict | None = None, idempotency_key: str | None = None) -> Any:
+        """POST avec en-tête ``Idempotency-Key``. La clé peut être fournie en argument ou via
+        ``idempotency_key=`` dans les options de n'importe quelle méthode d'écriture ; sans clé, une
+        nouvelle est générée. Sans clé fournie, un POST n'est PAS rejoué après un timeout / une
+        erreur réseau (le serveur a pu traiter la requête : risque de doublon, PY-03)."""
+        body = dict(body or {})
+        explicit = idempotency_key or body.pop("idempotency_key", None)
         return self._request(
-            "POST", path, json=body or {}, headers={"Idempotency-Key": idempotency_key}
+            "POST",
+            path,
+            json=body,
+            headers={"Idempotency-Key": explicit or str(uuid.uuid4())},
+            _retry_transport=bool(explicit),
         )
 
     def put(self, path: str, body: dict | None = None) -> Any:
@@ -129,13 +138,15 @@ class HttpClient:
     def _request(self, method: str, path: str, **kwargs) -> Any:
         url = f"{self.base_url}{path}"
         extra_headers: dict = kwargs.pop("headers", {})
+        # Timeout / erreur réseau : on ne rejoue pas un POST sans clé d'idempotence fournie par l'appelant
+        retry_transport: bool = kwargs.pop("_retry_transport", True)
         attempt = 0
 
         while True:
             try:
                 response = self._client.request(method, url, headers=extra_headers, **kwargs)
             except httpx.TimeoutException:
-                if attempt < self.max_retries:
+                if retry_transport and attempt < self.max_retries:
                     time.sleep(self._backoff(attempt))
                     attempt += 1
                     continue
@@ -143,7 +154,7 @@ class HttpClient:
             except httpx.RequestError as exc:
                 # Erreur réseau (DNS, connexion refusée, etc.) — jamais de
                 # réponse du serveur. Transitoire : on retry comme un 5xx.
-                if attempt < self.max_retries:
+                if retry_transport and attempt < self.max_retries:
                     time.sleep(self._backoff(attempt))
                     attempt += 1
                     continue

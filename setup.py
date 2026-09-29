@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="sangho",
-    version="0.1.3",
+    version="0.2.0",
     description="Sangho Python SDK — XAF-first payment platform for Africa",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",

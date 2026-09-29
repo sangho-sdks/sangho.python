@@ -14,17 +14,28 @@ class PaymentIntents(AsyncBaseResource):
         self._client.assert_secret_key("payment_intents.retrieve")
         return await self._client.get(f"{self._path}{id}/")
 
-    async def create(self, amount: int, customer: str, **opts) -> dict:
+    async def create(
+        self,
+        amount: int | float | str,
+        currency: str = "XAF",
+        customer_email: str | None = None,
+        *,
+        idempotency_key: str | None = None,
+        **opts,
+    ) -> dict:
         """
         Args:
-            amount: Amount in XAF.
-            customer: Customer ID.
-            payment_method, description, metadata, capture_method: optional.
+            amount: Montant en unité MAJEURE de la devise (5000 = 5000 XAF), jamais en centimes.
+            currency: Code ISO 4217 (défaut ``XAF``) — exigé par le backend.
+            customer_email: E-mail de l'acheteur (le backend lit ``customer_email``, pas ``customer``).
+            idempotency_key: rejoue l'appel sans doublon (même clé + même corps = même réponse).
+            description, metadata, category, payment_method_types: optionnels.
         """
         self._client.assert_secret_key("payment_intents.create")
-        return await self._client.post(
-            self._path, body={"amount": amount, "customer": customer, **opts}
-        )
+        body = {"amount": amount, "currency": currency, **opts}
+        if customer_email:
+            body["customer_email"] = customer_email
+        return await self._client.post(self._path, body=body, idempotency_key=idempotency_key)
 
     async def update(self, id: str, **payloads) -> dict:
         self._client.assert_secret_key("payment_intents.update")
