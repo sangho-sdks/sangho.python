@@ -11,6 +11,7 @@ from sangho import SanghoNotFoundError, SanghoPublicKeyError, SanghoValidationEr
 
 pytestmark = pytest.mark.integration
 
+
 class TestCustomersIntegration:
     # ── CRUD complet ─────────────────────────────────────────────────────────
 

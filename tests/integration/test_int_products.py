@@ -8,6 +8,7 @@ from sangho import SanghoNotFoundError
 
 pytestmark = pytest.mark.integration
 
+
 class TestProductsIntegration:
     def test_create_product(self, client):
         product = client.products.create(
