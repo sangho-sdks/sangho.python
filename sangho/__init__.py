@@ -41,7 +41,7 @@ from sangho._errors import (
 from sangho.sangho import Sangho
 from sangho.sangho_async import AsyncSangho
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 __all__ = [
     "Sangho",
     "AsyncSangho",
