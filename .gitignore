@@ -1,3 +1,4 @@
+# .gitignore
 # ── Bytecode ──────────────────────────────────────────────
 __pycache__/
 *.py[cod]
@@ -49,3 +50,6 @@ Thumbs.db
 .env
 .env.local
 *.pem
+
+# Message de commit local (make commit)
+commit.txt

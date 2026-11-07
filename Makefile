@@ -1,3 +1,4 @@
+# Makefile
 # =============================================================================
 # Sangho SDK Python — Makefile
 # =============================================================================
@@ -10,7 +11,7 @@
         lint lint-fix format typecheck check build clean \
         version-patch version-minor version-major changelog \
         publish-test publish release-current release-patch release-minor release-major \
-        _bump _git-tag-and-push info
+        _bump _git-tag-and-push commit info
 
 # Détection automatique Windows vs Unix
 ifeq ($(OS),Windows_NT)
@@ -175,6 +176,15 @@ publish: build test ## Publie sur PyPI (nécessite les identifiants twine)
 	@echo "$(CYAN)→ Publication v$(VERSION) sur PyPI...$(RESET)"
 	twine upload dist/*
 	@echo "$(GREEN)✓ $(PKG_NAME)@$(VERSION) publié sur PyPI$(RESET)"
+
+# -----------------------------------------------------------------------------
+# GIT
+# -----------------------------------------------------------------------------
+commit: ## Commit tous les changements avec commit.txt comme message
+	@echo "$(CYAN)→ Commit (message : commit.txt)...$(RESET)"
+	git add -A
+	git commit -F commit.txt
+	@echo "$(GREEN)✓ Commit créé$(RESET)"
 
 # -----------------------------------------------------------------------------
 # RELEASE COMPLÈTE (versioning + git tag + publish)

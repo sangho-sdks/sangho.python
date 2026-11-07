@@ -1,10 +1,15 @@
+<!-- README.md -->
 # Sangho Python SDK
 
 SDK officiel Python pour l'API [Sangho](https://sangho.ga) — paiements XAF pour l'Afrique.
 
 [![PyPI version](https://badge.fury.io/py/sangho.svg)](https://badge.fury.io/py/sangho)
-[![CI](https://github.com/sangho-sdks/sangho.py/actions/workflows/ci.yml/badge.svg)](https://github.com/sangho-sdks/sangho.py/actions/workflows/ci.yml)
+[![CI](https://github.com/sangho-sdks/sangho.python/actions/workflows/ci.yml/badge.svg)](https://github.com/sangho-sdks/sangho.python/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+[![Site](https://img.shields.io/badge/Site-sangho.ga-0B1F3A?style=for-the-badge)](https://sangho.ga) [![Documentation](https://img.shields.io/badge/Documentation-docs.sangho.ga/python-1D4ED8?style=for-the-badge)](https://docs.sangho.ga/api/sdks/python/) [![Tableau de bord](https://img.shields.io/badge/Tableau%20de%20bord-dash.sangho.ga-0F766E?style=for-the-badge)](https://dash.sangho.ga) [![CGU](https://img.shields.io/badge/CGU-legal.sangho.ga-475569?style=for-the-badge)](https://legal.sangho.ga/cgu/)
+
+Acceptez les paiements **Mobile Money** et **carte** en **XAF** au Gabon et en Afrique centrale (CEMAC) avec le SDK Python officiel de [Sangho](https://sangho.ga) : payment intents, checkout hébergé, abonnements, factures, remboursements et webhooks signés.
 
 ---
 
@@ -190,6 +195,27 @@ Voir [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Voir [CHANGELOG.md](CHANGELOG.md).
 
+## Liens utiles
+
+| | |
+|---|---|
+| Site | [sangho.ga](https://sangho.ga) |
+| Documentation de ce SDK | [docs.sangho.ga/api/sdks/python](https://docs.sangho.ga/api/sdks/python/) |
+| Documentation générale | [docs.sangho.ga](https://docs.sangho.ga) |
+| Tableau de bord | [dash.sangho.ga](https://dash.sangho.ga) |
+| Support / Contact | [sangho.ga/support](https://sangho.ga/support/) · [sangho.ga/contact](https://sangho.ga/contact/) |
+| Conditions générales d'utilisation | [legal.sangho.ga/cgu](https://legal.sangho.ga/cgu/) |
+| Politique de confidentialité | [legal.sangho.ga/privacy](https://legal.sangho.ga/privacy/) |
+| Accord de services de paiement | [legal.sangho.ga/payment-terms](https://legal.sangho.ga/payment-terms/) |
+| Mentions légales | [legal.sangho.ga/legal-notice](https://legal.sangho.ga/legal-notice/) |
+| Sécurité (signalement) | [SECURITY.md](SECURITY.md) |
+
+## Autres SDK Sangho
+
+[Python](https://github.com/sangho-sdks/sangho.python) · [PHP](https://github.com/sangho-sdks/sangho.php) · [JavaScript / TypeScript](https://github.com/sangho-sdks/sangho.js)
+
+Ce SDK est distribué sur [PyPI](https://pypi.org/project/sangho/).
+
 ## Licence
 
-MIT
+MIT © [Sangho](https://sangho.ga)
